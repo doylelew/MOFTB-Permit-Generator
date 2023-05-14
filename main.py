@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+from selenium.common.exceptions import WebDriverException
 
 from WebDriver import OpenBrowser, Login
 #################################################################
@@ -8,7 +9,6 @@ from WebDriver import OpenBrowser, Login
 #################################################################
 MOFTBUrl = "https://nyceventpermits.nyc.gov/film/"
 Test404 = "https://photos.google.com/meory/"
-
 
 
 #################################################################
@@ -24,8 +24,12 @@ def main():
             break
         print(f"broswer choice of {browser_choice} is invalid")
     browser = OpenBrowser(url= MOFTBUrl, browser_type = browser_choice )
-
-    Login(browser= browser, username=os.getenv('LOG_USERNAME'), password=os.getenv('LOG_PASSWORD'))
+    try:
+        Login(browser= browser, username=os.getenv('LOG_USERNAME'), password=os.getenv('LOG_PASSWORD'))
+    except WebDriverException as msg:
+        print(msg)
+    except Exception as msg:
+        print(msg)
     input("Press Enter to close browser...")
     browser.close()
 
