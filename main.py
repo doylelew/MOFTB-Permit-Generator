@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from selenium.common.exceptions import WebDriverException
 
-from WebDriver import OpenBrowser, Login
+from WebDriver import OpenBrowser, Login, ProjectSelect
 #################################################################
 # Constants
 #################################################################
@@ -26,6 +26,7 @@ def main():
     browser = OpenBrowser(url= MOFTBUrl, browser_type = browser_choice )
     try:
         Login(browser= browser, username=os.getenv('LOG_USERNAME'), password=os.getenv('LOG_PASSWORD'))
+        ProjectSelect(browser= browser)
     except WebDriverException as msg:
         print(msg)
     except Exception as msg:

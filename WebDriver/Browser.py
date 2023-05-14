@@ -4,7 +4,7 @@ from selenium.common.exceptions import WebDriverException
 from bs4 import BeautifulSoup as soup
 
 
-def OpenBrowser(url, browser_type): #open broswer of userchoice and go to Mayor's office website
+def OpenBrowser(url:str, browser_type:str): #open broswer of userchoice and go to Mayor's office website
     if browser_type == "Firefox":
         browser = webdriver.Firefox()
 
