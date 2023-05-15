@@ -1,9 +1,9 @@
 import customtkinter as ctk
 from .GUI_Framework import SubFrameTemplate
 
-class ErrorPage(SubFrameTemplate):
-    def __init__(self):
-        super().__init__()
+class InfoPage(SubFrameTemplate):
+    def __init__(self, parent:ctk.CTk):
+        super().__init__(parent)
 
     def open(self, message: str):
         super().open()

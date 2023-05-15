@@ -6,9 +6,9 @@ import customtkinter as ctk
 
 
 class SubFrameTemplate:
-    def __init__(self):
+    def __init__(self, parent: ctk.CTkFrame):
+        self.parent = parent
         self.frame: ctk.CTkFrame | None = None
-        self.parent: ctk.CTk | None = None
         self.browser: webdriver | None = None
         self.routes = {'success': None, 'error': None, 'back': None}
 
@@ -17,6 +17,7 @@ class SubFrameTemplate:
         return self
 
     def open(self):
+        print("parent tried to open")
         self.frame = ctk.CTkFrame(self.parent)
 
     def close(self):
@@ -41,16 +42,6 @@ class MainWindow:
         self.parent.geometry('900x720')
         self.parent.resizable(False, False)
         self.parent.wm_title('Unofficial MOFTB NY Permit Generator')
-        self.pages: []| None = None
 
     def run(self):
         self.parent.mainloop()
-
-    def definePages(self, pages:[SubFrameTemplate]):
-        self.pages = [page.addFrameToParent(self.parent) for page in pages]
-
-
-def createWindow():
-    app = ctk.CTk()
-    window = MainWindow(parent=app)
-    return window

@@ -12,13 +12,14 @@ Test404 = "https://photos.google.com/meory/"
 
 
 class BrowserLogin(SubFrameTemplate):
-    def __init__(self):
+    def __init__(self, parent:ctk.CTk):
         self.browser_choice: str | None = None
         self.login_data: tuple[str,str] | None
-        super().__init__()
+        super().__init__(parent)
 
 
     def open(self):
+        print("opening Login")
         super().open()
         self.header = ctk.CTkLabel(self.frame, text="Please enter your MOFTB Login information and choose a prefered broswer")
         self.header.place(relx=0.5, rely=0.15, anchor='center')
