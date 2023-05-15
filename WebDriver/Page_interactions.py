@@ -72,7 +72,7 @@ def PermitList(browser, intended_url: str) -> dict[str, str]:
                 a_href = row.find('a', {'id': PermitNameTag})
                 href_string = re.sub(r'PermitStep\d','PermitStep1',a_href['href']) #always start on the first step of the permit
                 incomplete_permits[a_href.text] = f"https://nyceventpermits.nyc.gov/film/Project/{href_string}"
-        print(incomplete_permits)
+        return incomplete_permits
 
 
 

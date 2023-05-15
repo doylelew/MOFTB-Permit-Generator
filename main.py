@@ -30,7 +30,6 @@ def main():
         Jump_To_URL(browser, project_list['SUCCESSION S4 AKA Sourdough Productions LLC 2ND UNIT'])
         permit_list = PermitList(browser=browser, intended_url= project_list['SUCCESSION S4 AKA Sourdough Productions LLC 2ND UNIT'])
 
-
     # except WebDriverException as msg:
     #     print(msg)
     #todo test that htis Exception isn't nessary to catch at this level
