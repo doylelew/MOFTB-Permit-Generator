@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from selenium import webdriver
+
 import customtkinter as ctk
 
 
@@ -7,7 +9,8 @@ class SubFrameTemplate:
     def __init__(self):
         self.frame: ctk.CTkFrame | None = None
         self.parent: ctk.CTk | None = None
-        self.routes = {'success':None, 'error': None, 'back': None}
+        self.browser: webdriver | None = None
+        self.routes = {'success': None, 'error': None, 'back': None}
 
     def addFrameToParent(self, parent:ctk.CTk):
         self.parent = parent
@@ -28,6 +31,9 @@ class SubFrameTemplate:
                 self.routes[pair[0]] = pair[1]
                 continue
             raise Exception(f"{pair[0]} is not a deifined route type")
+
+    def receiveBrowser(self, browser: webdriver):
+        self.browser = browser
 
 class MainWindow:
     def __init__(self, parent: ctk.CTk):

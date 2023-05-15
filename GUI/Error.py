@@ -7,11 +7,11 @@ class ErrorPage(SubFrameTemplate):
 
     def open(self, message: str):
         super().open()
-        header = ctk.CTkLabel(self.frame, text=message)
-        header.place(relx=0.5, rely=0.2, anchor='center')
+        self.header = ctk.CTkLabel(self.frame, text=message)
+        self.header.place(relx=0.5, rely=0.2, anchor='center')
 
         self.frame.pack(fill='both', expand=True)
 
     def close(self):
-        header.destroy()
+        self.header.destroy()
         super().close()
