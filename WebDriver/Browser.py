@@ -26,7 +26,7 @@ def Jump_To_URL(browser, url: str):
 def OpenBrowser(starting_url:str, browser_type:str):
 
     """
-    open broswer of userchoice and go to a starting website
+    open broswer of user choice and go to a starting website
     :param starting_url: The URL you would like the broswer to begin at
     :param browser_type: What broswer would you like selenium to use, e.g. Chrome, Firefox
     :return: Selenium Broswer Object
