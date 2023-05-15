@@ -4,6 +4,12 @@ from selenium.common.exceptions import WebDriverException
 from bs4 import BeautifulSoup as soup
 
 def Jump_To_URL(browser, url: str):
+    """
+    allows for a 'safe' jump to a URL by handling 404 and network errors when jumping
+    :param browser: Broswer Driver object from Selenium
+    :param url: the url you would like to jump to
+    """
+
     try:
         browser.get(url)
         page_checker = soup(browser.page_source, 'html.parser')
@@ -17,7 +23,15 @@ def Jump_To_URL(browser, url: str):
     except WebDriverException as msg:
         print(f"Could not connect to {url}, please check internet connection before trying again\nDetails:\n{msg}")
 
-def OpenBrowser(url:str, browser_type:str): #open broswer of userchoice and go to Mayor's office website
+def OpenBrowser(starting_url:str, browser_type:str):
+
+    """
+    open broswer of userchoice and go to a starting website
+    :param starting_url: The URL you would like the broswer to begin at
+    :param browser_type: What broswer would you like selenium to use, e.g. Chrome, Firefox
+    :return: Selenium Broswer Object
+    """
+
     if browser_type == "Firefox":
         browser = webdriver.Firefox()
 
