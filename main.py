@@ -33,11 +33,6 @@ __maintainer__ = "Doyle Lewis"
 __email__ = "odoylerules@pennyworth.network"
 __status__ = "Development"
 
-#################################################################
-# Constants
-#################################################################
-MOFTBUrl = "https://nyceventpermits.nyc.gov/film/"
-Test404 = "https://photos.google.com/meory/"
 
 
 #################################################################
@@ -48,6 +43,7 @@ def main():
     window = createWindow()
     error_page = ErrorPage()
     login_page = BrowserLogin()
+
 
     window.definePages([error_page,
                         login_page])

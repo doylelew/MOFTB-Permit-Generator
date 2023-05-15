@@ -32,15 +32,22 @@ def OpenBrowser(starting_url:str, browser_type:str):
     :return: Selenium Broswer Object
     """
 
-    if browser_type == "Firefox":
-        browser = webdriver.Firefox()
+    accepted_browsers = [
+        "Firefox",
+        "Chrome"
+    ]
 
-    if browser_type == "Chrome":
-        browser = webdriver.Chrome()
+    if browser_type in accepted_browsers:
+        if browser_type == "Firefox":
+            browser = webdriver.Firefox()
 
-    Jump_To_URL(browser = browser, url = url)
+        if browser_type == "Chrome":
+            browser = webdriver.Chrome()
 
-    return browser
+        Jump_To_URL(browser=browser,url=starting_url)
+
+        return browser
+    raise Exception(f"{browser_type} is not an accepted browser type")
 
 # todo Chrome closes with 'disconnected: not connected to DevTools' exception.
 
