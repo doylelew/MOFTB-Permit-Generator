@@ -5,7 +5,7 @@ from selenium.common.exceptions import WebDriverException
 import customtkinter as ctk
 
 from WebDriver import OpenBrowser, Login, ProjectList, Jump_To_URL, PermitList
-from GUI import MainWindow, InfoPage, BrowserLogin, ProjectPage
+from GUI import MainWindow, SubFrameTemplate, InfoPage, BrowserLogin, ProjectPage
 
 #################################################################
 # app info
@@ -44,9 +44,28 @@ class App(MainWindow):
             'Login': BrowserLogin(self.parent),
             'Project': ProjectPage(self.parent),
         }
+        self.current_page = self.pages['Login']
+
+    def openCurrentPage(self, message: str =None):
+        self.current_page.open(message)
+
+    def uncheckedChangePage(self,to_page: SubFrameTemplate):
+        self.current_page.close()
+        self.current_page = to_page
+        self.openCurrentPage()
+
+    def checkedChangePage(self, to_page: SubFrameTemplate, exception_to_page: SubFrameTemplate):
+        self.current_page.close()
+        self.current_page = to_page
+        try:
+            self.openCurrentPage()
+        except Exception as msg:
+            self.current_page.close()
+            self.current_page = exception_to_page
+            self.openCurrentPage(msg)
 
     def run(self):
-        self.pages['Login'].open()
+        self.openCurrentPage()
         super().run()
 
 
