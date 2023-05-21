@@ -1,6 +1,7 @@
 import re
 
 from selenium.webdriver.common.by import By
+import requests
 
 from bs4 import BeautifulSoup as soup
 
@@ -15,48 +16,56 @@ home_url = 'https://nyceventpermits.nyc.gov/film/Home.aspx'
 # Page handling functions
 #################################################################
 
+# def CheckPage(current_url:str, desired_url:str) -> bool:
+#     """
+#     Checks that current url is the same or a queried version of the desired url
+#
+#     :param current_url: the URL the broswer is currently viewing
+#     :param desired_url: the URL you want to confirm that you are viewing
+#     :return: Bool, True the urls are the same or False and raise an exception
+#     """
+#
+#     if desired_url in current_url:
+#         return True
+#     raise Exception(f"expected to be at {desired_url} instead was taken to {current_url}")
+#     return False
+
+
+
 # Login Constants
 UsernameTag = "ctl00$Main$txtUserName"
 PasswordTag = "ctl00$Main$txtPassword"
 LoginSubmitTag = "ctl00$Main$btnLogin"
 
-def CheckPage(current_url:str, desired_url:str) -> bool:
-    """
-    Checks that current url is the same or a queried version of the desired url
-
-    :param current_url: the URL the broswer is currently viewing
-    :param desired_url: the URL you want to confirm that you are viewing
-    :return: Bool, True the urls are the same or False and raise an exception
-    """
-
-    if desired_url in current_url:
-        return True
-    raise Exception(f"expected to be at {desired_url} instead was taken to {current_url}")
-    return False
-
-def Login(browser, username:str, password:str):
+def Login(session, username:str, password:str):
     """
     Pass user's username and password and enter it into the MOFTB login page
-    :param browser: The broswer driver object from Selenium
+    :param session: request session
     :param username: Username used to log into MOFTB
     :param password: Password used to log into MOFTB
     :return: None
     """
+    login_page = cursor.get(login_url)
+    form_html = soup(login_page.content, 'html.parser').find('form', {'name': 'aspnetForm'})
 
-    # check user is on the login page
-    current_url = browser.current_url
-    if login_url in current_url:
-        # enter username and passwrd them submit
-        browser.find_element(By.NAME, UsernameTag).send_keys(username)
-        browser.find_element(By.NAME, PasswordTag).send_keys(password)
-        browser.find_element(By.NAME, LoginSubmitTag).click()
-        current_url = browser.current_url
-    # if user ends on home page or started there anyway move forward
-    if home_url in current_url:
-        return
-    # otherwise if they are on some other page
-    raise Exception (f"Website has taken you to {current_url} instead of {login_url} or {home_url}\nPlease log out and retry")
-    #todo add logic for if they provide incorrect username or password
+    payload = {
+        "__EVENTTARGET": "",
+        "__EVENTARGUMENT": "",
+        "__VIEWSTATE": form_html.find('input', {'name': '__VIEWSTATE'}).get('value'),
+        "__VIEWSTATEGENERATOR": form_html.find('input', {'name': '__VIEWSTATEGENERATOR'}).get('value'),
+        "__SCROLLPOSITIONX": "0",
+        "__SCROLLPOSITIONY": "0",
+        "__VIEWSTATEENCRYPTED": "",
+        "__EVENTVALIDATION": form_html.find('input', {'name': '__EVENTVALIDATION'}).get('value'),
+        "ctl00$Main$txtUserName": username,
+        "ctl00$Main$txtPassword": password,
+        "ctl00$Main$btnLogin": "Submit",
+    }
+    response = cursor.post(url, data=payload)
+    print(f"login responded with code: {response.status_code}")
+    home_page = cursor.get(home_url)
+    print(f"homepage responded with code: {home_page.status_code}")
+
 
 # Choose_Project Func Constants
 ProjectTableTag = "ctl00_Main_gvProjectsList"
