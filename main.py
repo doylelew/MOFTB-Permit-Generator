@@ -37,6 +37,7 @@ __status__ = "Development"
 
 def main():
     load_dotenv(".env")
+    #todo Change this to have Tkinter logic handle pages and main handles tkinter lifetime
 
     session = requests.Session()
     try:
