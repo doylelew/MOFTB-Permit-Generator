@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import requests
 
-from WebDriver import OpenBrowser, login, ProjectList, Jump_To_URL, PermitList
+from WebDriver import OpenBrowser, login, projectList, Jump_To_URL, PermitList
 
 #################################################################
 # app info
@@ -47,9 +47,12 @@ def main():
 
     session = requests.Session()
     try:
-        login(session=session,username=os.getenv('LOG_USERNAME'), password=os.getenv('LOG_PASSWORD') )
+        login_success, response = login(session=session,username=os.getenv('LOG_USERNAME'), password=os.getenv('LOG_PASSWORD') )
+        project_list, response = projectList(session=session)
     except Exception as msg:
         print(msg)
+
+    print(project_list)
 
     session.close()
 

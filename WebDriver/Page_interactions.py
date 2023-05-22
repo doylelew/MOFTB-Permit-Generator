@@ -24,14 +24,17 @@ def checkPage(current_response:requests.Response, desired_url:str) -> bool:
 
     :param current_response: the request object of the current session
     :param desired_url: the URL you want to confirm that you are viewing
-    :return: None
+    :return: bool, True if it passes the check and False if it fails, also raises error for type of fail along with response object
     """
+
 
     if current_response.status_code != 200:
         raise Exception(f"Did not get response from page {current_response.url} Error: {current_response.status_code}")
-
+        return False
     if desired_url not in current_response.url:
         raise Exception(f"expected to be at {desired_url} instead was taken to {current_response.url}")
+        return False
+    return True
 
 
 
@@ -46,31 +49,28 @@ def login(session, username:str, password:str):
     :param session: request session
     :param username: Username used to log into MOFTB
     :param password: Password used to log into MOFTB
-    :return: None
+    :return: bool, True if login was successful, false if not
     """
     login_page = session.get(login_url)
-    checkPage(current_response=login_page, desired_url=login_url)
+    if checkPage(current_response=login_page, desired_url=login_url):
+        form_html = soup(login_page.content, 'html.parser').find('form', {'name': 'aspnetForm'})
 
-    form_html = soup(login_page.content, 'html.parser').find('form', {'name': 'aspnetForm'})
+        payload = {
+            "__EVENTTARGET": "",
+            "__EVENTARGUMENT": "",
+            "__VIEWSTATE": form_html.find('input', {'name': '__VIEWSTATE'}).get('value'),
+            "__VIEWSTATEGENERATOR": form_html.find('input', {'name': '__VIEWSTATEGENERATOR'}).get('value'),
+            "__SCROLLPOSITIONX": "0",
+            "__SCROLLPOSITIONY": "0",
+            "__VIEWSTATEENCRYPTED": "",
+            "__EVENTVALIDATION": form_html.find('input', {'name': '__EVENTVALIDATION'}).get('value'),
+            "ctl00$Main$txtUserName": username,
+            "ctl00$Main$txtPassword": password,
+            "ctl00$Main$btnLogin": "Submit",
+        }
 
-    payload = {
-        "__EVENTTARGET": "",
-        "__EVENTARGUMENT": "",
-        "__VIEWSTATE": form_html.find('input', {'name': '__VIEWSTATE'}).get('value'),
-        "__VIEWSTATEGENERATOR": form_html.find('input', {'name': '__VIEWSTATEGENERATOR'}).get('value'),
-        "__SCROLLPOSITIONX": "0",
-        "__SCROLLPOSITIONY": "0",
-        "__VIEWSTATEENCRYPTED": "",
-        "__EVENTVALIDATION": form_html.find('input', {'name': '__EVENTVALIDATION'}).get('value'),
-        "ctl00$Main$txtUserName": username,
-        "ctl00$Main$txtPassword": password,
-        "ctl00$Main$btnLogin": "Submit",
-    }
-
-    response = session.post(login_url, data=payload)
-    checkPage(current_response=response, desired_url= home_url)
-
-    print(response.url)
+        response = session.post(login_url, data=payload)
+        return checkPage(current_response=response, desired_url= home_url), response
 
 
 
@@ -79,20 +79,20 @@ ProjectTableTag = "ctl00_Main_gvProjectsList"
 ProjectRowTag = "grid_border"
 
 # looks at the aviable projects on the home page and return a dictionary of names and hyperlinks
-def ProjectList(browser) -> dict[str, str]:
+def projectList(session) -> dict[str, str]:
     """
     Searches the Home page for listed projects and returns a dictionary of projects and links
     :param browser: Broswer driver object from Selenium
     :return: Dictionary of Key: Project name, Value: URL to project permit page
     """
-
-    if CheckPage(current_url=browser.current_url, desired_url= home_url):
-        project_table = soup(browser.page_source, 'html.parser').find('table', {'id': ProjectTableTag}).findAll('tr', {'class',ProjectRowTag})
+    home_page = session.get(home_url)
+    if checkPage(current_response= home_page, desired_url= home_url):
+        project_table = soup(home_page.content, 'html.parser').find('table', {'id': ProjectTableTag}).findAll('tr', {'class',ProjectRowTag})
         project_list = {}
         for row in project_table:
             a_href = row.find('a')
             project_list[a_href.text] =f"https://nyceventpermits.nyc.gov/film/{a_href['href'].replace('ProjectSummary','PermitSummary')}" #Our app will never need to use the project summary so we jkust change the shortcut to Permit summary
-        return  project_list
+        return  project_list, home_page
 
 # PermitList contstants
 PermitTableTag = "ctl00_Main_gvUserEvents"
