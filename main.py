@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import requests
 
-from WebDriver import OpenBrowser, login, projectList, permitList
+from WebDriver import login, projectList, permitList
 
 #################################################################
 # app info

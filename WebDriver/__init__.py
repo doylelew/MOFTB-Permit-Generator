@@ -1,2 +1,2 @@
-from.Browser import OpenBrowser, Jump_To_URL
-from.Page_interactions import login, projectList, permitList
+from.Login import login
+from .Permit_Select import projectList, permitList
