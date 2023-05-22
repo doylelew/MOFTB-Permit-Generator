@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import requests
 
-from WebDriver import OpenBrowser, login, projectList, Jump_To_URL, PermitList
+from WebDriver import OpenBrowser, login, projectList, permitList
 
 #################################################################
 # app info
@@ -49,10 +49,12 @@ def main():
     try:
         login_success, response = login(session=session,username=os.getenv('LOG_USERNAME'), password=os.getenv('LOG_PASSWORD') )
         project_list, response = projectList(session=session)
+        permit_list, response = permitList(session=session,intended_url=project_list['SUCCESSION S4 AKA Sourdough Productions LLC 2ND UNIT'])
     except Exception as msg:
         print(msg)
 
-    print(project_list)
+
+    print(permit_list)
 
     session.close()
 

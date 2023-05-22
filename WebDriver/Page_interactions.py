@@ -43,7 +43,7 @@ UsernameTag = "ctl00$Main$txtUserName"
 PasswordTag = "ctl00$Main$txtPassword"
 LoginSubmitTag = "ctl00$Main$btnLogin"
 
-def login(session, username:str, password:str):
+def login(session: requests.Session, username:str, password:str):
     """
     Pass user's username and password and enter it into the MOFTB login page
     :param session: request session
@@ -79,10 +79,10 @@ ProjectTableTag = "ctl00_Main_gvProjectsList"
 ProjectRowTag = "grid_border"
 
 # looks at the aviable projects on the home page and return a dictionary of names and hyperlinks
-def projectList(session) -> dict[str, str]:
+def projectList(session:requests.Session) -> dict[str, str]:
     """
     Searches the Home page for listed projects and returns a dictionary of projects and links
-    :param browser: Broswer driver object from Selenium
+    :param session: request session
     :return: Dictionary of Key: Project name, Value: URL to project permit page
     """
     home_page = session.get(home_url)
@@ -91,7 +91,7 @@ def projectList(session) -> dict[str, str]:
         project_list = {}
         for row in project_table:
             a_href = row.find('a')
-            project_list[a_href.text] =f"https://nyceventpermits.nyc.gov/film/{a_href['href'].replace('ProjectSummary','PermitSummary')}" #Our app will never need to use the project summary so we jkust change the shortcut to Permit summary
+            project_list[a_href.text] =f"https://nyceventpermits.nyc.gov/film/{a_href['href'].replace('ProjectSummary','PermitSummary')}" #Our app will never need to use the project summary so we just change the shortcut to permit summary
         return  project_list, home_page
 
 # PermitList contstants
@@ -101,22 +101,23 @@ PermitNameTag = re.compile(r'ctl\d+_Main_gvUserEvents_ctl\d+_hlEventName')
 PermitStatusTag = re.compile(r'ctl\d+_Main_gvUserEvents_ctl\d+_lblStatus')
 
 # Choose_Project Func Constants
-def PermitList(browser, intended_url: str) -> dict[str, str]:
+def permitList(session: requests.Session, intended_url: str) -> dict[str, str]:
     """
     Searches the Permit list page to return a dictionary of incompleted permits and the links to their first step
-    :param browser: Broswer driver object from Selenium
+    :param session: request session
     :param intended_url: The URL of the project that you intend to be viewing
     :return: Dictionary of Key: Permit name, Value: URL to permit Step 1 page
     """
-    if CheckPage(current_url=browser.current_url, desired_url=intended_url):
-        project_table = soup(browser.page_source, 'html.parser').find('table', {'id': PermitTableTag}).findAll('tr', {'class', PermitRowTag})
+    project_page = session.get(intended_url)
+    if checkPage(current_response=project_page, desired_url=intended_url):
+        project_table = soup(project_page.content, 'html.parser').find('table', {'id': PermitTableTag}).findAll('tr', {'class', PermitRowTag})
         incomplete_permits = {}
         for row in project_table:
             if row.find('span', {'id':PermitStatusTag}).text == "Incomplete":
                 a_href = row.find('a', {'id': PermitNameTag})
                 href_string = re.sub(r'PermitStep\d','PermitStep1',a_href['href']) #always start on the first step of the permit
                 incomplete_permits[a_href.text] = f"https://nyceventpermits.nyc.gov/film/Project/{href_string}"
-        return incomplete_permits
+        return incomplete_permits, project_page
 
 
 
