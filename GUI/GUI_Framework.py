@@ -4,7 +4,7 @@ import requests
 import customtkinter as ctk
 
 class SubFrameTemplate:
-    def __init__(self, parent: MainWindow, next_frame_name:str):
+    def __init__(self, parent: MainWindow, next_frame_name: str | None):
         self.master = parent
         self.parent = self.master.getParentFrame()
         self.frame = ctk.CTkFrame(self.parent)

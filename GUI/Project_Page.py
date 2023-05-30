@@ -1,12 +1,12 @@
 import customtkinter as ctk
 
-from .GUI_Framework import SubFrameTemplate
+from .GUI_Framework import SubFrameTemplate, MainWindow
 from WebDriver import projectList, permitList
 
 # from WebDriver import ProjectList
 
 class ProjectPage(SubFrameTemplate):
-    def __init__(self, parent:ctk.CTk, next_frame_name:str):
+    def __init__(self, parent: MainWindow | ctk.CTk, next_frame_name: str | None):
         super().__init__(parent, next_frame_name)
         self.header = ctk.CTkLabel(self.frame, text="Please choose the project and permit you would like to work on")
         self.select_project = None

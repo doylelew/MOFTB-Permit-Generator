@@ -3,7 +3,7 @@ import time
 import customtkinter as ctk
 import requests
 
-from .GUI_Framework import SubFrameTemplate
+from .GUI_Framework import SubFrameTemplate, MainWindow
 from WebDriver import login
 
 
@@ -15,7 +15,7 @@ Test404 = "https://photos.google.com/meory/"
 
 
 class LoginPage(SubFrameTemplate):
-    def __init__(self, parent:ctk.CTk, next_page_name:str):
+    def __init__(self, parent: MainWindow | ctk.CTk, next_page_name: str | None):
         self.login_data: tuple[str,str] | None
         self.frame: ctk.CTkFrame | None
         super().__init__(parent, next_page_name)
