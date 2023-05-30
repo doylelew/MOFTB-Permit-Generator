@@ -54,10 +54,12 @@ class LoginPage(SubFrameTemplate):
         self.browser_choicebox.set(self.browser_choice)
 
         self.login_text.place(relx=0.5, rely=0.25, anchor='center')
+        self.login_entry.delete(0, ctk.END)
         self.login_entry.insert(0, username)
         self.login_entry.place(relx=0.5, rely=0.3, anchor='center')
 
         self.password_text.place(relx=0.5, rely=0.35, anchor='center')
+        self.password_entry.delete(0, ctk.END)
         self.password_entry.insert(0, password)
         self.password_entry.place(relx=0.5, rely=0.4, anchor='center')
 
