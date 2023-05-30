@@ -13,8 +13,8 @@ class SubFrameTemplate:
         :param parent: The application frame you would like to attach this frame to
         :param next_frame_name: The frame you would like to open next from within this frame when moving on.
         """
-        self.master = parent
-        self.parent = self.master.getParentFrame()
+        self.parent_wrapper = parent
+        self.parent = self.parent_wrapper.getParentFrame()
         self.frame = ctk.CTkFrame(self.parent)
         self.next_frame_name = next_frame_name
 
@@ -117,7 +117,7 @@ class MainWindow:
 
     def run(self, startFrame:str):
         """
-        runs the main loop and tells the master frame which of its children frames to open first
+        runs the main loop and tells the parent_wrapper frame which of its children frames to open first
         :param startFrame: The string name of the frame you want to start with in this object's dictionary of frames defined in the build() function
         :return:
         """
