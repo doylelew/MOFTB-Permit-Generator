@@ -1,8 +1,8 @@
 import customtkinter as ctk
-from .GUI_Framework import SubFrameTemplate
+from .GUI_Framework import SubFrameTemplate, MainWindow
 
 class InfoPage(SubFrameTemplate):
-    def __init__(self, parent:ctk.CTk):
+    def __init__(self, parent: MainWindow| ctk.CTk):
         super().__init__(parent)
 
     def open(self, message: str):

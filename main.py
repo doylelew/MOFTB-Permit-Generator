@@ -1,9 +1,9 @@
 import os
 
-from dotenv import load_dotenv
+import customtkinter as ctk
 import requests
 
-from WebDriver import login, projectList, permitList
+from GUI import MainWindow, LoginPage, ProjectPage, PermitPage1
 
 #################################################################
 # app info
@@ -36,18 +36,18 @@ __status__ = "Development"
 #################################################################
 
 def main():
-    load_dotenv(".env")
+
 
     session = requests.Session()
-    try:
-        login_success, response = login(session=session,username=os.getenv('LOG_USERNAME'), password=os.getenv('LOG_PASSWORD') )
-        project_list, response = projectList(session=session)
-        permit_list, response = permitList(session=session,intended_url=project_list['SUCCESSION S4 AKA Sourdough Productions LLC 2ND UNIT'])
-    except Exception as msg:
-        print(msg)
 
-
-    print(permit_list)
+    window = ctk.CTk()
+    app = MainWindow(parent=window, session=session)
+    app.build({
+        'Login': LoginPage(parent=app, next_frame_name='Project Select'),
+        'Project Select': ProjectPage(parent=app,next_frame_name='Permit_Page1'),
+        'Permit_Page1': PermitPage1(parent=app),
+    })
+    app.run('Login')
 
     session.close()
 
