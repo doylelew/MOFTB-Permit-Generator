@@ -4,6 +4,7 @@ import customtkinter as ctk
 import requests
 
 from GUI import MainWindow, LoginPage, ProjectPage, PermitPage1
+from SaveStates import saveUserData
 
 #################################################################
 # app info
@@ -47,6 +48,7 @@ def main():
         'Project Select': ProjectPage(parent=app,next_frame_name='Permit_Page1'),
         'Permit_Page1': PermitPage1(parent=app),
     })
+    saveUserData()
     app.run('Login')
 
     session.close()
