@@ -14,6 +14,6 @@ def checkPage(current_response:requests.Response, desired_url:str) -> bool:
         raise Exception(f"Did not get response from page {current_response.url} Error: {current_response.status_code}")
         return False
     if desired_url not in current_response.url:
-        raise Exception(f"expected to be at {desired_url} instead was taken to {current_response.url}")
+        raise Exception(f"Page Request Exception: expected to be at {desired_url} instead was taken to {current_response.url}")
         return False
     return True

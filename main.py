@@ -48,9 +48,7 @@ def main():
         'Project Select': ProjectPage(parent=app,next_frame_name='Permit_Page1'),
         'Permit_Page1': PermitPage1(parent=app),
     })
-    saveUserData()
     app.run('Login')
-
     session.close()
 
 
