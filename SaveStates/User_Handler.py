@@ -22,6 +22,21 @@ def hashPassword(password: str):
     btye_hash = crypter.encrypt(bytes(password, encoding='utf8'))
     return btye_hash.decode('utf-8')
 
+def unhashPassword(password: str):
+    load_dotenv('.env')
+    decrypter = Fernet(os.getenv("HASH_KEY"))
+    try:
+        password = decrypter.decrypt(bytes(password, encoding='utf8')).decode('utf-8')
+    except:
+        password = ""
+    return password
+
+def checkSamePass(hash_password: str, password: str):
+    load_dotenv('.env')
+    decrypter = Fernet(os.getenv("HASH_KEY"))
+    if decrypter.decrypt(bytes(hash_password, encoding='utf8')).decode('utf-8') == password:
+        return True
+    return False
 
 
 def saveUserData(username: str, password: str, browser: str):
@@ -44,8 +59,9 @@ def saveUserData(username: str, password: str, browser: str):
 
         user_list = [user['email'] for user in saved_user_data['users']]
         if username in user_list:
-            saved_user_data['users'][user_list.index(username)]['password'] = hash_password
             saved_user_data['users'][user_list.index(username)]['preferred browser'] = browser
+            if not checkSamePass(hash_password = saved_user_data['users'][user_list.index(username)]['password'], password=password ):
+                saved_user_data['users'][user_list.index(username)]['password'] = hash_password
         else:
             saved_user_data['users'].append(user_data['users'][0])
         user_data = saved_user_data
@@ -80,11 +96,7 @@ def lastUserInfo():
         browser = saved_user_data['users'][user_list.index(username)]['preferred browser']
         load_dotenv('.env')
         hash_password = saved_user_data['users'][user_list.index(username)]['password']
-        decrypter = Fernet(os.getenv("HASH_KEY"))
-        try:
-            password = decrypter.decrypt(bytes(hash_password, encoding='utf-8')).decode('utf-8')
-        except:
-            password = ""
+        password = unhashPassword(hash_password)
 
     return username, password, browser
 
