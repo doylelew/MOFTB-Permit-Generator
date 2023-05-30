@@ -42,11 +42,10 @@ def main():
 
     window = ctk.CTk()
     app = MainWindow(parent=window, session=session)
-    dict_of_frames = {
+    app.build({
         'Login': LoginPage(parent=app, next_page_name='Project Select'),
-        'Project Select': ProjectPage(parent=app, next_frame_name= None)
-    }
-    app.build(dict_of_frames)
+        'Project Select': ProjectPage(parent=app),
+    })
     app.run('Login')
 
     session.close()
