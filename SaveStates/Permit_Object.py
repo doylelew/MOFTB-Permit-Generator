@@ -35,9 +35,15 @@ class DraftPermit:
         self.name = name
         self.type = permit_type
         self.locations: list[Location] | None = None
+        self.owner: str | None = None
+        self.id: str | None = None
 
     def addLocations(self, location_list: list[Location]):
         if not self.locations:
             self.locations = []
         for location in location_list:
             self.locations.append(location)
+
+    def addSessionData(self, owner: str, id: str| None = None):
+        self.owner = owner
+        self.id = id

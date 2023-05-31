@@ -10,6 +10,7 @@ user_data_folder = f"{sessions_folder}userdata/"
 
 
 user_data_path = f"{user_data_folder}userdata.json"
+session_info_path = f"{user_data_folder}current_session.json"
 
 def hashPassword(password: str):
     if not os.path.isfile('.env'):
@@ -38,6 +39,20 @@ def checkSamePass(hash_password: str, password: str):
         return True
     return False
 
+def saveSessionInfo(username: str, alias: str, preferred_browser: str):
+    session_data = {
+        "user": username,
+        "preferred_browser": preferred_browser,
+        "save locations": {
+            "drafts folder": f"sessions/{alias}/drafts/",
+            "saves folder": f"sessions/{alias}/permits/",
+        }
+    }
+
+    with open(session_info_path, 'w') as data:
+        data.write(json.dumps(session_data, indent=2))
+
+
 
 def saveUserData(username: str, password: str, browser: str):
     user_alias = re.sub(r'\W+', '', username.split('@', 1)[0])
@@ -52,6 +67,7 @@ def saveUserData(username: str, password: str, browser: str):
             },
         ]
     }
+
 
     if os.path.isfile(user_data_path):
         with open(user_data_path,'r') as data:
@@ -82,6 +98,8 @@ def saveUserData(username: str, password: str, browser: str):
 
     with open(user_data_path, 'w') as save_data:
         save_data.write(json.dumps(user_data, indent=2))
+
+    saveSessionInfo(username=username, alias=user_alias, preferred_browser=browser)
 
 
 def lastUserInfo():
