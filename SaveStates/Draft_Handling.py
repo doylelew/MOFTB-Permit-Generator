@@ -1,6 +1,5 @@
 import json
 import os
-import re
 
 from .Permit_Object import DraftPermit, Location
 
@@ -23,7 +22,7 @@ def saveDraft(permit: DraftPermit):
     session_data = getSessionData()
 
     permit.addSessionData(owner=session_data["user"])
-    # todo implement ID in the addSessionData
+    # todo implement ID in current session logic
 
     permit_data = {
         "owner": permit.owner,
@@ -32,7 +31,6 @@ def saveDraft(permit: DraftPermit):
         "type": permit.type.value,
         "locations": list(map(saveLocation, permit.locations))
     }
-    print(permit_data)
     with open(f"../{session_data['save locations']['drafts folder']}{permit.name}.json", 'w') as save_data:
         save_data.write(json.dumps(permit_data, indent=2))
 

@@ -34,7 +34,7 @@ class DraftPermit:
     def __init__(self, name: str, permit_type: PermitType):
         self.name = name
         self.type = permit_type
-        self.locations: list[Location] | None = None
+        self.locations: list[Location] = []
         self.owner: str | None = None
         self.id: str | None = None
 
