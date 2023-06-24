@@ -3,7 +3,7 @@ import os
 import customtkinter as ctk
 import requests
 
-from GUI import MainWindow, LoginPage, ProjectPage
+from GUI import MainWindow, LoginPage, ProjectPage, PermitPage1
 
 #################################################################
 # app info
@@ -42,11 +42,11 @@ def main():
 
     window = ctk.CTk()
     app = MainWindow(parent=window, session=session)
-    dict_of_frames = {
-        'Login': LoginPage(parent=app, next_page_name='Project Select'),
-        'Project Select': ProjectPage(parent=app, next_frame_name= None)
-    }
-    app.build(dict_of_frames)
+    app.build({
+        'Login': LoginPage(parent=app, next_frame_name='Project Select'),
+        'Project Select': ProjectPage(parent=app,next_frame_name='Permit_Page1'),
+        'Permit_Page1': PermitPage1(parent=app),
+    })
     app.run('Login')
 
     session.close()

@@ -3,7 +3,7 @@ import time
 import customtkinter as ctk
 import requests
 
-from .GUI_Framework import SubFrameTemplate
+from .GUI_Framework import SubFrameTemplate, MainWindow
 from WebDriver import login
 
 
@@ -15,10 +15,10 @@ Test404 = "https://photos.google.com/meory/"
 
 
 class LoginPage(SubFrameTemplate):
-    def __init__(self, parent:ctk.CTk, next_page_name:str):
+    def __init__(self, parent: MainWindow | ctk.CTk, next_frame_name: str | None):
         self.login_data: tuple[str,str] | None
         self.frame: ctk.CTkFrame | None
-        super().__init__(parent, next_page_name)
+        super().__init__(parent, next_frame_name)
 
         self.header = ctk.CTkLabel(self.frame,
                                    text="Please enter your MOFTB Login information and choose a prefered broswer")
@@ -77,20 +77,20 @@ class LoginPage(SubFrameTemplate):
         self.login_data = (self.login_entry.get(), self.password_entry.get())
         self.close()
 
-        self.master.loadingStart("Loading...\n Please wait while we receive information from MOFTB website")
+        self.parent_wrapper.loadingStart("Loading...\n Please wait while we receive information from MOFTB website")
 
         try:
-            success, response =login(session=self.master.session, username=self.login_data[0],password=self.login_data[1])
+            success, response =login(session=self.parent_wrapper.session, username=self.login_data[0], password=self.login_data[1])
         except:
             self.header.configure(text="username or password was incorrect please check both and try again", text_color='red')
-            self.master.loadingEnd()
+            self.parent_wrapper.loadingEnd()
             self.open()
             return
             #todo seperate out types of exceptions and responses
 
         if success:
-            self.master.jumpToFrame(self.next_frame_name)
-            self.master.loadingEnd()
+            self.parent_wrapper.jumpToFrame(self.next_frame_name)
+            self.parent_wrapper.loadingEnd()
             return
         self.header.configure(text="something mysterious happend please try again",
                               text_color='red')
