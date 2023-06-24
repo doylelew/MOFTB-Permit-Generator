@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup as soup
 
+from SaveStates import saveUserData
+
 from .Page_Handler import checkPage
 
 
@@ -21,7 +23,7 @@ UsernameTag = "ctl00$Main$txtUserName"
 PasswordTag = "ctl00$Main$txtPassword"
 LoginSubmitTag = "ctl00$Main$btnLogin"
 
-def login(session: requests.Session, username:str, password:str):
+def login(session: requests.Session, username:str, password:str, browser:str):
     """
     Pass user's username and password and enter it into the MOFTB login page
     :param session: request session
@@ -48,7 +50,11 @@ def login(session: requests.Session, username:str, password:str):
         }
 
         response = session.post(login_url, data=payload)
-        return checkPage(current_response=response, desired_url= home_url), response
+        successful_signin = checkPage(current_response=response, desired_url= home_url)
+
+        saveUserData(username=username, password=password, browser=browser)
+
+        return successful_signin, response
 
 
 

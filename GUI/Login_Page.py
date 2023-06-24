@@ -5,6 +5,7 @@ import requests
 
 from .GUI_Framework import SubFrameTemplate, MainWindow
 from WebDriver import login
+from SaveStates import lastUserInfo
 
 
 #################################################################
@@ -31,6 +32,7 @@ class LoginPage(SubFrameTemplate):
         self.login_text = ctk.CTkLabel(self.frame, text="Email Address")
 
         self.login_entry = ctk.CTkEntry(self.frame, width=300, height=40)
+        # todo make a autocomplete or past user dropdown
 
         self.password_text = ctk.CTkLabel(self.frame, text="MOFTB password")
 
@@ -42,17 +44,23 @@ class LoginPage(SubFrameTemplate):
 
     def open(self):
 
+        username, password, browser = lastUserInfo()
+
+        self.browser_choice = browser
+
         self.header.place(relx=0.5, rely=0.15, anchor='center')
 
         self.browser_choicebox.place(relx=0.5, rely=0.2, anchor='center')
-        self.browser_choicebox.set( self.browser_choice)
+        self.browser_choicebox.set(self.browser_choice)
 
         self.login_text.place(relx=0.5, rely=0.25, anchor='center')
-
+        self.login_entry.delete(0, ctk.END)
+        self.login_entry.insert(0, username)
         self.login_entry.place(relx=0.5, rely=0.3, anchor='center')
 
         self.password_text.place(relx=0.5, rely=0.35, anchor='center')
-
+        self.password_entry.delete(0, ctk.END)
+        self.password_entry.insert(0, password)
         self.password_entry.place(relx=0.5, rely=0.4, anchor='center')
 
         self.sumbit_button.place(relx=0.5, rely=0.5, anchor='center')
@@ -60,29 +68,21 @@ class LoginPage(SubFrameTemplate):
         super().open()
 
 
-    # def close(self):
-    #     # self.header.place_forget()
-    #     # self.browser_choicebox.place_forget()
-    #     # self.login_text.place_forget()
-    #     # self.login_entry.place_forget()
-    #     # self.password_text.place_forget()
-    #     # self.password_entry.place_forget()
-    #     # self.sumbit_button.place_forget()
-    #     super().close()
-
     def changeBroswerOption(self, choice):
         self.browser_choice = choice
 
     def submit(self):
-        self.login_data = (self.login_entry.get(), self.password_entry.get())
+        self.login_data = (self.login_entry.get(), self.password_entry.get(), self.browser_choice)
         self.close()
 
         self.parent_wrapper.loadingStart("Loading...\n Please wait while we receive information from MOFTB website")
 
         try:
-            success, response =login(session=self.parent_wrapper.session, username=self.login_data[0], password=self.login_data[1])
-        except:
-            self.header.configure(text="username or password was incorrect please check both and try again", text_color='red')
+            success, response =login(session=self.parent_wrapper.session, username=self.login_data[0], password=self.login_data[1], browser=self.login_data[2])
+        except Exception as msg:
+            self.header.configure(text=msg, text_color='red')
+            if "Page Request Exception" in str(msg):
+                self.header.configure(text="Username or password is incorrect please check both and try again", text_color='red')
             self.parent_wrapper.loadingEnd()
             self.open()
             return
@@ -97,21 +97,6 @@ class LoginPage(SubFrameTemplate):
         self.open()
         return
 
-
-
-
-        # if 'ctkframe' not in str(self.browser_choice):
-        #     self.login_data = (self.login_entry.get(), self.password_entry.get())
-        #     self.close()
-        #     self.routes['error'].open("Loading data from MOFTB website please wait")
-        #     self.browser = OpenBrowser(starting_url=MOFTBUrl, browser_type=self.browser_choice)
-        #     try:
-        #         Login(self.browser, self.login_data[0], self.login_data[1])
-        #     except:
-        #         self.routes['error'].close()
-        #         self.open()
-        #         self.header.configure(text="There was a problem logging in, please check your email and password ")
-        #     return
 
 
 
