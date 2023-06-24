@@ -49,6 +49,8 @@ def main():
         'Permit_Page1': PermitPage1(parent=app),
     })
     app.run('Login')
+
+
     session.close()
 
 
