@@ -1,0 +1,14 @@
+{
+  "fields": {
+    "username": {
+      "label": "Email Address",
+      "input_type": "Entry",
+      "options": []
+    },
+    "password": {
+      "label": "Password",
+      "input_type": "Entry",
+      "options": []
+    }
+  }
+}
